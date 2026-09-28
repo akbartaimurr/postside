@@ -1,17 +1,18 @@
-import Image from "next/image";
-import ArrowIcon from "@/components/ArrowIcon";
 import EarlyAccessForm from "@/components/EarlyAccessForm";
 // eslint-disable-next-line no-unused-vars -- TEMP: flags hidden in the hero for comparison
 import { Flag, RotatingFlag } from "@/components/Flag";
 import FontCycle from "@/components/FontCycle";
+import HowItWorks from "@/components/HowItWorks";
 import PhoneStory from "@/components/PhoneStory";
 import PixelEdge from "@/components/PixelEdge";
-import HowItWorks from "@/components/HowItWorks";
+import SiteFooter from "@/components/SiteFooter";
+import SiteHeader from "@/components/SiteHeader";
+import WaitlistCTA from "@/components/WaitlistCTA";
 
-const navLinks = [
-  { label: "How it works", href: "#how-it-works" }, // rent a US cloud phone monthly, post from anywhere
-  { label: "Results", href: "#results" }, // real reach from accounts posting through Postside
-];
+export const metadata = {
+  title: "Postside | Join the waitlist",
+  description: "Go viral in America from anywhere. Join the waitlist for a real US cloud phone.",
+};
 
 export default function Home() {
   return (
@@ -20,32 +21,7 @@ export default function Home() {
     // lines, so the logo and button sit exactly where they did.
     <div className="flex flex-1 flex-col">
       <div className="flex flex-1 flex-col bg-white">
-        <header className="flex h-16 items-center justify-between bg-white px-[calc(2.5rem+2px)] sm:px-[calc(4rem+2px)] lg:px-[calc(13rem+2px)]">
-          <div className="flex items-center gap-[1.4375rem]">
-            <a href="/" className="flex items-center gap-1 font-display text-[1.375rem] font-semibold">
-              <Image src="/logo.png" alt="" width={736} height={646} priority className="h-4 w-auto" />
-              Postside
-            </a>
-
-            <nav className="hidden items-center gap-6 text-[1.01875rem] font-medium text-muted md:flex">
-              {navLinks.map((link) => (
-                <a key={link.href} href={link.href} className="hover:text-[#454545]">
-                  {link.label}
-                </a>
-              ))}
-            </nav>
-          </div>
-
-          <div className="text-base font-medium">
-            <a
-              href="#waitlist"
-              className="flex h-9 items-center gap-1.5 squircle bg-foreground px-4 font-semibold text-surface hover:bg-neutral-700"
-            >
-              Join the waitlist
-              <ArrowIcon />
-            </a>
-          </div>
-        </header>
+        <SiteHeader />
 
         {/* Bottom padding = the gap under the pinned phone stage (see PhoneStory: stage top
             (100dvh-48rem)/2, desktop 7.06875rem, and the same gap below it). That way <main> reaches
@@ -76,21 +52,22 @@ export default function Home() {
           </h1>
 
           <div className="relative z-10 mt-[2.125rem] flex items-center gap-3 text-base font-medium">
-            <EarlyAccessForm />
+            <EarlyAccessForm id="waitlist" />
           </div>
 
           {/* Phone scrolls up with the hero, pins centred, and reveals the feature callouts */}
           <PhoneStory />
-
-          {/* TODO(footer): CC BY 4.0 requires crediting the phone model — add to the footer:
-              "iPhone model by MajdyModels · CC BY 4.0"
-              https://sketchfab.com/3d-models/iphone-16-pro-max-41a071ae12794b668502f58d1e0fd1a3 */}
         </main>
 
         {/* The mesh's pixelated ending, dissolving into the white page below */}
         <PixelEdge />
 
         <HowItWorks />
+
+        <WaitlistCTA />
+
+        {/* Includes the CC BY 4.0 credit for the phone model */}
+        <SiteFooter />
       </div>
     </div>
   );

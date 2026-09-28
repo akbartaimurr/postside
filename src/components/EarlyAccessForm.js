@@ -6,20 +6,21 @@ import ArrowIcon from "@/components/ArrowIcon";
 
 // Email field (h-11) with a slightly smaller submit button docked
 // inside it. Messages are absolutely positioned so the hero's height never changes.
-export default function EarlyAccessForm() {
+// `id`: only the hero's form gets id="waitlist" (the navbar button's target), since ids must be unique.
+export default function EarlyAccessForm({ id }) {
   const [state, formAction, pending] = useActionState(joinWaitlist, { status: "idle" });
 
   if (state.status === "ok") {
     return (
       <p className="flex h-11 items-center squircle bg-black/[0.04] px-4">
-        You&apos;re on the list — we&apos;ll be in touch.
+        You&apos;re on the list, we&apos;ll be in touch.
       </p>
     );
   }
 
   return (
     <form
-      id="waitlist"
+      id={id}
       action={formAction}
       className="relative flex h-11 items-center squircle bg-black/[0.04] py-1 pr-1 pl-4"
     >

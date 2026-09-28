@@ -9,9 +9,16 @@ import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
 import WaitlistCTA from "@/components/WaitlistCTA";
 
+const TITLE = "Postside | Join the waitlist";
+const DESCRIPTION = "Go viral in America from anywhere with Postside's cloud-based solutions.";
+
+// The share image itself comes from app/opengraph-image.jpg + twitter-image.jpg (1200×630, made
+// from public/banner.png); Next adds those tags with full URLs automatically
 export const metadata = {
-  title: "Postside | Join the waitlist",
-  description: "Go viral in America from anywhere. Join the waitlist for a real US cloud phone.",
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: { title: TITLE, description: DESCRIPTION, siteName: "Postside", type: "website" },
+  twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },
 };
 
 export default function Home() {

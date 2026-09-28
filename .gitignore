@@ -38,4 +38,7 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# raw source media (uncompressed videos / 3D model); the site uses the compressed copies in public/
+/assets/
 next-env.d.ts

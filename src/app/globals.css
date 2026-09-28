@@ -2,25 +2,298 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --surface: #f9fbfe;
+  --foreground: #0a0a0a;
+  --muted: #6b6b6b;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-muted: var(--muted);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-bricolage);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/*
+ * Desktop scales as one piece: every Tailwind size is rem-based, so tying the root
+ * font size to the viewport height makes the page always 66.25rem tall (the 1060px
+ * reference), keeping the hero's vertical fit identical on any screen, zoom or Mac.
+ * Width only takes over on near-square screens (< ~1.2:1) so the navbar can't collide.
+ */
+@media (min-width: 1024px) {
+  html {
+    font-size: max(11px, min(100dvh / 66.25, 100vw / 80));
   }
+}
+
+/* Text selection highlight */
+::selection {
+  background: #c6d5f5;
+}
+
+/* Hide the page scrollbar; wheel/touch/keyboard scrolling still works */
+html {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  letter-spacing: -0.03125rem;
+}
+
+/* Blue/teal mesh rising from the bottom of the hero, fading out behind the headline */
+.hero-mesh,
+.hero-grain {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.hero-mesh {
+  background:
+    radial-gradient(55% 45% at 10% 100%, #1d8fe8 0%, transparent 72%),
+    radial-gradient(45% 42% at 38% 96%, #5ab8f0 0%, transparent 72%),
+    radial-gradient(50% 50% at 68% 100%, #2b9ae0 0%, transparent 72%),
+    radial-gradient(42% 44% at 96% 88%, #38bdf8 0%, transparent 72%),
+    radial-gradient(75% 60% at 50% 112%, #0b74c9 0%, transparent 75%),
+    radial-gradient(55% 45% at 24% 66%, #38bdf8 0%, transparent 70%),
+    radial-gradient(52% 42% at 80% 62%, #a9dcf7 0%, transparent 70%),
+    radial-gradient(70% 38% at 52% 50%, #9fd3f5 0%, transparent 70%),
+    /* Faint, varied tints up top: aqua, pale teal, ice blue */
+    radial-gradient(40% 28% at 16% 36%, #7dd3fc 0%, transparent 70%),
+    radial-gradient(38% 26% at 84% 34%, #a5f3fc 0%, transparent 70%),
+    radial-gradient(45% 24% at 55% 28%, #c7e7fb 0%, transparent 70%);
+  filter: blur(2rem) brightness(1.15) saturate(1.05);
+  /* Overscan so the blur's soft edge falls outside the clip instead of leaving a white rim */
+  inset: -5rem;
+  mask-image: linear-gradient(to top, #000 0%, #000 50%, rgb(0 0 0 / 0.6) 76%, transparent 100%);
+}
+
+/* Viewport-sized mesh hanging off a zero-height sticky anchor, so it stays on screen while the
+   long phone story scrolls (bottom still overscanned past the viewport edge) */
+.hero-mesh--pinned {
+  inset: auto -5rem;
+  top: -5rem;
+  height: calc(100dvh + 10rem);
+}
+
+/* Matte film grain: mid-grey noise blended with overlay, so it only shows on the colour, not on white */
+.hero-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0.66 0.66 0.66 0 -0.5 0.66 0.66 0.66 0 -0.5 0.66 0.66 0.66 0 -0.5 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.55;
+  mix-blend-mode: overlay;
+  mask-image: linear-gradient(to top, #000 0%, #000 45%, rgb(0 0 0 / 0.6) 65%, transparent 92%);
+}
+
+/* Reel carousel: drifts right → left forever, running edge to edge */
+.reel-track {
+  animation: reel-scroll 40s linear infinite;
+}
+
+@keyframes reel-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reel-track {
+    animation: none;
+  }
+}
+
+/* Apple-style rounded-rect buttons: smooth continuous (squircle) corners where supported */
+.squircle {
+  border-radius: 1.0625rem;
+}
+
+/* squircle = superellipse(2), round = 1; 1.7 sits between for rounder, still-smooth corners */
+@supports (corner-shape: superellipse(1.7)) {
+  .squircle {
+    border-radius: 1.25rem;
+    corner-shape: superellipse(1.7);
+  }
+}
+
+/* Hero flags: squircle corners where supported (Chrome/Edge), plain rounded corners elsewhere */
+.flag-squircle {
+  border-radius: 0.08em;
+}
+
+@supports (corner-shape: squircle) {
+  .flag-squircle {
+    border-radius: 0.14em;
+    corner-shape: squircle;
+  }
+}
+
+/* "How Postside works" card motion graphics */
+@keyframes hiw-ping {
+  from {
+    transform: scale(0.55);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+/* Check / label swap: appears ~20% in, holds, clears before the loop restarts */
+@keyframes hiw-pop {
+  0%,
+  18% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  26%,
+  88% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+@keyframes hiw-fade-in {
+  0%,
+  18% {
+    opacity: 0;
+  }
+  26%,
+  88% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes hiw-fade-out {
+  0%,
+  18% {
+    opacity: 1;
+  }
+  26%,
+  88% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Feed swipe over 9 stacked clips (8 + the first repeated): hold each ~1.5s, swipe ~0.5s, on a
+   16s loop. Each step is one clip = 1/9 of the strip. */
+@keyframes hiw-swipe8 {
+  0%,
+  9.5% {
+    transform: translateY(0);
+  }
+  12.5%,
+  22% {
+    transform: translateY(-11.1111%);
+  }
+  25%,
+  34.5% {
+    transform: translateY(-22.2222%);
+  }
+  37.5%,
+  47% {
+    transform: translateY(-33.3333%);
+  }
+  50%,
+  59.5% {
+    transform: translateY(-44.4444%);
+  }
+  62.5%,
+  72% {
+    transform: translateY(-55.5556%);
+  }
+  75%,
+  84.5% {
+    transform: translateY(-66.6667%);
+  }
+  87.5%,
+  97% {
+    transform: translateY(-77.7778%);
+  }
+  100% {
+    transform: translateY(-88.8889%);
+  }
+}
+
+/* Chat lines: rise in (staggered by delay), hold, then clear before the loop restarts */
+@keyframes hiw-seq {
+  0% {
+    opacity: 0;
+    transform: translateY(0.4rem);
+  }
+  8%,
+  70% {
+    opacity: 1;
+    transform: none;
+  }
+  80%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [class*="animate-[hiw-"] {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+
+  /* Still frame shows the finished state ("Signed in"), so hide the "Signing in" label */
+  [class*="animate-[hiw-fade-out"] {
+    opacity: 0 !important;
+  }
+}
+
+/* Phone-story callout entrance (mobile card; desktop uses the same look via transitions) */
+@keyframes callout-in {
+  from {
+    opacity: 0;
+    filter: blur(12px);
+    transform: translateY(0.5rem) scale(0.97);
+  }
+}
+
+/* Diagonal hatching in the strip between the double frame lines (the inner column is solid white on top) */
+.frame-hatch {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgb(0 0 0 / 0.12) 0 1px,
+    transparent 1px 0.4375rem
+  );
+}
+
+/* Matte paper texture over the whole page (inside and outside the frame); it never blocks
+   clicks. Plain opacity, no blend mode: a blend mode over the animating WebGL canvas forces a
+   full-screen re-blend every frame. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0.66 0.66 0.66 0 -0.5 0.66 0.66 0.66 0 -0.5 0.66 0.66 0.66 0 -0.5 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.05;
 }

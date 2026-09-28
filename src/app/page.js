@@ -1,69 +1,97 @@
 import Image from "next/image";
+import ArrowIcon from "@/components/ArrowIcon";
+import EarlyAccessForm from "@/components/EarlyAccessForm";
+// eslint-disable-next-line no-unused-vars -- TEMP: flags hidden in the hero for comparison
+import { Flag, RotatingFlag } from "@/components/Flag";
+import FontCycle from "@/components/FontCycle";
+import PhoneStory from "@/components/PhoneStory";
+import PixelEdge from "@/components/PixelEdge";
+import HowItWorks from "@/components/HowItWorks";
+
+const navLinks = [
+  { label: "How it works", href: "#how-it-works" }, // rent a US cloud phone monthly, post from anywhere
+  { label: "Results", href: "#results" }, // real reach from accounts posting through Postside
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.js
-            </code>{" "}
-            file.
+    // Full-width page (the old framed column with side hairlines is removed for now, so the mesh
+    // runs edge to edge). The navbar's side padding absorbs the frame's old margins + its two 1px
+    // lines, so the logo and button sit exactly where they did.
+    <div className="flex flex-1 flex-col">
+      <div className="flex flex-1 flex-col bg-white">
+        <header className="flex h-16 items-center justify-between bg-white px-[calc(2.5rem+2px)] sm:px-[calc(4rem+2px)] lg:px-[calc(13rem+2px)]">
+          <div className="flex items-center gap-[1.4375rem]">
+            <a href="/" className="flex items-center gap-1 font-display text-[1.375rem] font-semibold">
+              <Image src="/logo.png" alt="" width={736} height={646} priority className="h-4 w-auto" />
+              Postside
+            </a>
+
+            <nav className="hidden items-center gap-6 text-[1.01875rem] font-medium text-muted md:flex">
+              {navLinks.map((link) => (
+                <a key={link.href} href={link.href} className="hover:text-[#454545]">
+                  {link.label}
+                </a>
+              ))}
+            </nav>
+          </div>
+
+          <div className="text-base font-medium">
+            <a
+              href="#waitlist"
+              className="flex h-9 items-center gap-1.5 squircle bg-foreground px-4 font-semibold text-surface hover:bg-neutral-700"
+            >
+              Join the waitlist
+              <ArrowIcon />
+            </a>
+          </div>
+        </header>
+
+        {/* Bottom padding = the gap under the pinned phone stage (see PhoneStory: stage top
+            (100dvh-48rem)/2, desktop 7.06875rem, and the same gap below it). That way <main> reaches
+            the bottom of the screen exactly when the phone unpins, so the mesh (and the pixel band
+            under it) start scrolling on the same frame as the phone. */}
+        <main className="relative isolate flex flex-1 flex-col items-center overflow-clip pt-[8.9375rem] pb-[max(0.5rem,calc((100dvh-48rem)/2))] text-center sm:pt-[11.9375rem] lg:pb-[7.06875rem]">
+          {/* Mesh pinned to the viewport while the phone story plays out over it. The sticky box sits
+              on a track spanning exactly <main>, so it unpins when the story ends (main's bottom
+              reaches the screen's bottom) and the mesh then scrolls away with the page, ending in
+              the pixel band below. */}
+          {/* Track starts below main's top padding (pt-[8.9375rem] / sm:pt-[11.9375rem]) so the
+              mesh starts and pins exactly where the old in-flow anchor did */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-[8.9375rem] bottom-0 -z-10 sm:top-[11.9375rem]"
+          >
+            <div className="sticky top-0 h-[100dvh] w-full">
+              <div className="hero-mesh hero-mesh--pinned" />
+            </div>
+          </div>
+          <h1 className="max-w-4xl px-6 font-display text-5xl lg:h-[2.1em] font-[450] leading-[1.05] tracking-[-0.035em] sm:text-7xl">
+            Go <FontCycle>viral</FontCycle> in America
+            {/* TEMP: flags hidden to compare — restore by uncommenting */}
+            {/* <Flag code="us" className="ml-[0.22em]" /> */}
+            <br />
+            from anywhere
+            {/* <RotatingFlag className="ml-[0.22em]" /> */}
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+
+          <div className="relative z-10 mt-[2.125rem] flex items-center gap-3 text-base font-medium">
+            <EarlyAccessForm />
+          </div>
+
+          {/* Phone scrolls up with the hero, pins centred, and reveals the feature callouts */}
+          <PhoneStory />
+
+          {/* TODO(footer): CC BY 4.0 requires crediting the phone model — add to the footer:
+              "iPhone model by MajdyModels · CC BY 4.0"
+              https://sketchfab.com/3d-models/iphone-16-pro-max-41a071ae12794b668502f58d1e0fd1a3 */}
+        </main>
+
+        {/* The mesh's pixelated ending, dissolving into the white page below */}
+        <PixelEdge />
+
+        <HowItWorks />
+      </div>
     </div>
   );
 }

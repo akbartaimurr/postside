@@ -11,7 +11,7 @@ const navLinks = [
 export default function SiteHeader() {
   return (
     <header className="flex h-16 items-center justify-between bg-white px-[calc(2.5rem+2px)] sm:px-[calc(4rem+2px)] lg:px-[calc(13rem+2px)]">
-      <div className="flex items-center gap-7">
+      <div className="flex items-center gap-6">
         <a href="/" className="flex items-center gap-1 font-display text-[1.375rem] font-semibold">
           <Image src="/logo.png" alt="" width={736} height={646} priority className="h-4 w-auto" />
           Postside
